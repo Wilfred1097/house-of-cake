@@ -42,7 +42,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="mt-8 pt-8 border-t border-brand-800 text-center text-sm">
-          <p>© {new Date().getFullYear()} Auré Sanchez House of Cakes. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Aure Sanchez House of Cakes. All rights reserved.</p>
         </div>
       </div>
     </footer>
