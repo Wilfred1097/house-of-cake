@@ -23,7 +23,7 @@ export default function Footer() {
           <div>
             <h3 className="text-lg font-medium mb-4">Contact</h3>
             <ul className="space-y-2 text-sm">
-              <li>09083400302</li>
+              <li>09083400302 | 09562061627</li>
               {/* <li>hello@auresanchez.com</li> */}
               <li>Legarda Street, Molave, Zamboanga del Sur (Beside Potter’s Young Friends Learning Center)</li>
               {/* <li>Beside Potter’s Young Friends Learning Center</li> */}
