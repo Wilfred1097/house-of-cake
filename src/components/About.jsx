@@ -8,7 +8,7 @@ export default function About() {
           <div>
             <h2 className="text-3xl font-serif text-rose-900 mb-6">Our Story</h2>
             <p className="text-gray-700 mb-4">
-              Since 1973, Sweet Delights has been crafting memorable celebrations with our handmade cakes. 
+              Since 1973, Our famliy has been crafting memorable celebrations with our handmade cakes. 
               What started as a small family bakery has grown into a beloved local institution, 
               thanks to our commitment to quality and creativity.
             </p>
