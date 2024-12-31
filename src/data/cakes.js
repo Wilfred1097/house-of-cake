@@ -5,13 +5,13 @@ export const cakeCategories = [
       {
         name: "Durian Cake",
         description: "Soft and fluffy dessert made with durian fruit, layered with sweet cream for a rich and unique flavor",
-        price: "1,100",
+        price: "1,250",
         image: "/src/data/img/durain-cake.png"
       },
       {
         name: "Ube Special Cake",
         description: "Soft and moist dessert made with purple yam (ube), layered with sweet cream and loved for its vibrant color and delicate, nutty flavor",
-        price: "900",
+        price: "950",
         image: "/src/data/img/ube-cake.png"
       },
       {
@@ -29,13 +29,13 @@ export const cakeCategories = [
       {
         name: "Yema Cake",
         description: "Soft and moist sponge cake topped with a rich and creamy yema frosting, often garnished with grated cheese for a perfect balance of sweetness and slight saltiness",
-        price: "900",
+        price: "950",
         image: "/src/data/img/yema-cake.png"
       },
       {
         name: "Mocha Caramel Cake",
         description: "Soft, coffee-flavored cake layered with creamy caramel frosting, combining the bold taste of mocha with the sweetness of caramel for a delightful treat",
-        price: "900",
+        price: "950",
         image: "/src/data/img/mocha-caramel-cake.png"
       }
     ]
