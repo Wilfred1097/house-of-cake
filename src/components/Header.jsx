@@ -7,6 +7,7 @@ const navigation = [
   { name: 'Menu', href: '#menu' },
   { name: 'About Us', href: '#about' },
   { name: 'Contact', href: '#footer' },
+  // { name: 'CRM', href: '/crm' },
 ];
 
 export default function Header() {
