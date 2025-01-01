@@ -7,6 +7,7 @@
     "server": "node src/server/server.js",
     "dev:all": "concurrently \"npm run dev\" \"npm run server\"",
     "build": "vite build",
+    "postbuild": "mkdir -p dist",
     "preview": "vite preview"
   },
   "dependencies": {

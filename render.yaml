@@ -2,8 +2,11 @@ services:
   - type: web
     name: aure-sanchez
     env: node
-    buildCommand: npm install && npm run build
-    startCommand: node src/server/server.js
+    buildCommand: |
+      npm install
+      npm run build
+    startCommand: NODE_ENV=production node src/server/server.js
+    staticPublishPath: ./dist
     envVars:
       - key: NODE_ENV
         value: production

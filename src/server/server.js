@@ -24,7 +24,8 @@ app.use(express.json());
 
 // Serve static files in production
 if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../../dist')));
+  const distPath = path.join(__dirname, '../../../dist');
+  app.use(express.static(distPath));
 }
 
 // Configure multer for image upload
@@ -104,11 +105,13 @@ app.post('/api/updateFooter', (req, res) => {
 // Handle all other routes in production
 app.get('*', (req, res) => {
   if (process.env.NODE_ENV === 'production') {
-    res.sendFile(path.join(__dirname, '../../dist/index.html'));
+    res.sendFile(path.join(__dirname, '../../../dist/index.html'));
   }
 });
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+  console.log('Environment:', process.env.NODE_ENV);
+  console.log('Current directory:', __dirname);
 }); 
