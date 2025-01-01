@@ -1,8 +1,15 @@
 // vite.config.js
-export default {
-    server: {
-      host: '0.0.0.0',  // Allow external connections
-      port: 5173         // You can also specify a port here, but 5173 is the default
-    }
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+
+export default defineConfig({
+  plugins: [react()],
+  server: {
+    host: '0.0.0.0',
+    port: 5173
+  },
+  define: {
+    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
   }
+});
   

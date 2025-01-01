@@ -2,5 +2,8 @@ services:
   - type: web
     name: aure-sanchez
     env: node
-    buildCommand: "npm run build"
-    startCommand: "npm run dev"
+    buildCommand: npm install && npm run build
+    startCommand: node src/server/server.js
+    envVars:
+      - key: NODE_ENV
+        value: production

@@ -4,6 +4,7 @@ import { removeAuthToken, isAuthenticated } from '../utils/auth';
 import { cakeCategories } from '../data/cakes';
 import { FaPen, FaTrash, FaPlus } from 'react-icons/fa';
 import FooterManager from './FooterManager';
+import { API_BASE_URL } from '../config/config';
 
 export default function CrmDashboard() {
   const navigate = useNavigate();
@@ -33,7 +34,7 @@ export default function CrmDashboard() {
     formData.append('image', file);
 
     try {
-      const response = await fetch('http://localhost:3001/api/upload', {
+      const response = await fetch(`${API_BASE_URL}/api/upload`, {
         method: 'POST',
         body: formData,
       });
@@ -51,7 +52,7 @@ export default function CrmDashboard() {
 
   const updateCakesFile = async (newCategories) => {
     try {
-      await fetch('http://localhost:3001/api/updateCakes', {
+      await fetch(`${API_BASE_URL}/api/updateCakes`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

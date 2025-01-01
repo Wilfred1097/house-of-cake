@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { FaPen } from 'react-icons/fa';
 import { footerDetails } from '../data/cakes';
+import { API_BASE_URL } from '../config/config';
 
 export default function FooterManager() {
   const [editing, setEditing] = useState(false);
@@ -12,7 +13,7 @@ export default function FooterManager() {
     setError(null);
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:3001/api/updateFooter', {
+      const response = await fetch(`${API_BASE_URL}/api/updateFooter`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -28,7 +29,6 @@ export default function FooterManager() {
       const data = await response.json();
       if (data.success) {
         setEditing(false);
-        // Refresh the page to show updated details
         window.location.reload();
       } else {
         throw new Error(data.error || 'Failed to update footer details');

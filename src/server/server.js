@@ -11,13 +11,21 @@ const __dirname = dirname(__filename);
 
 const app = express();
 
-// Configure CORS
+// Configure CORS for both development and production
 app.use(cors({
-  origin: 'http://localhost:5173', // Your Vite dev server
+  origin: [
+    'http://localhost:5173',
+    'https://houseofcakes.onrender.com'
+  ],
   credentials: true
 }));
 
 app.use(express.json());
+
+// Serve static files in production
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '../../dist')));
+}
 
 // Configure multer for image upload
 const storage = multer.diskStorage({
@@ -93,7 +101,14 @@ app.post('/api/updateFooter', (req, res) => {
   });
 });
 
-const PORT = 3001;
+// Handle all other routes in production
+app.get('*', (req, res) => {
+  if (process.env.NODE_ENV === 'production') {
+    res.sendFile(path.join(__dirname, '../../dist/index.html'));
+  }
+});
+
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 }); 
