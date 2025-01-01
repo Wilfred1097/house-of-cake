@@ -2,27 +2,10 @@ services:
   - type: web
     name: aure-sanchez
     env: node
-    buildCommand: |
-      echo "Starting build process..."
-      npm install
-      npm run build
-      echo "Build complete. Setting up files..."
-      mkdir -p /opt/render/project/dist
-      cp -r dist/* /opt/render/project/dist/ || true
-      echo "Checking final directory structure..."
-      ls -la /opt/render/project/dist/
+    buildCommand: npm install
     startCommand: |
-      echo "Starting server..."
-      echo "Current directory: $(pwd)"
-      echo "Directory contents:"
-      ls -la
-      echo "Dist directory contents:"
-      ls -la /opt/render/project/dist
-      RENDER=true NODE_ENV=production node src/server/server.js
+      echo "Starting servers..."
+      npm start
     envVars:
-      - key: NODE_ENV
-        value: production
       - key: PORT
         value: 10000
-      - key: RENDER
-        value: "true"
