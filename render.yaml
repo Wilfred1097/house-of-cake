@@ -3,21 +3,32 @@ services:
     name: aure-sanchez
     env: node
     buildCommand: |
-      if [ -f "build.sh" ]; then
-        bash build.sh
-      else
-        npm install
-        npm run build
-        mkdir -p dist
-        cp -r build/* dist/ || true
-        ls -la dist/
-      fi
-    startCommand: |
-      echo "Current directory: $(pwd)"
+      echo "Starting build process..."
+      npm install
+      npm run build
+      echo "Build complete. Checking directories..."
+      pwd
+      echo "Current directory contents:"
       ls -la
-      NODE_ENV=production node src/server/server.js
+      echo "Dist directory contents:"
+      ls -la dist || true
+      echo "Ensuring dist directory exists..."
+      mkdir -p dist
+      echo "Copying build files if they exist..."
+      cp -r build/* dist/ 2>/dev/null || true
+      cp index.html dist/ 2>/dev/null || true
+      echo "Final dist directory contents:"
+      ls -la dist
+    startCommand: |
+      echo "Starting server..."
+      echo "Current directory: $(pwd)"
+      echo "Directory contents:"
+      ls -la
+      RENDER=true NODE_ENV=production node src/server/server.js
     envVars:
       - key: NODE_ENV
         value: production
       - key: PORT
         value: 10000
+      - key: RENDER
+        value: "true"

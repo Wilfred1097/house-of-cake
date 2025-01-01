@@ -18,7 +18,9 @@ export default defineConfig({
         manualChunks: undefined
       }
     },
-    copyPublicDir: true
+    copyPublicDir: true,
+    base: '/',
+    sourcemap: true
   },
   define: {
     'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)

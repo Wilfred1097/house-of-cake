@@ -8,17 +8,29 @@ import { dirname } from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const rootDir = process.env.NODE_ENV === 'production' 
-  ? '/opt/render/project/src' 
-  : path.join(__dirname, '../../');
+
+// Adjust root directory for Render's environment
+const rootDir = process.env.RENDER ? '/opt/render/project/src' : path.join(__dirname, '../../');
+const distDir = path.join(rootDir, 'dist');
 
 const app = express();
 
-console.log('Current directory:', process.cwd());
-console.log('Root directory:', rootDir);
+console.log('Environment Variables:', {
+  NODE_ENV: process.env.NODE_ENV,
+  RENDER: process.env.RENDER,
+  PWD: process.env.PWD
+});
+
+console.log('Directories:', {
+  rootDir,
+  distDir,
+  currentDir: process.cwd(),
+  dirname: __dirname
+});
 
 app.use(cors({
   origin: [
+    'http://localhost:5173',
     'https://houseofcakes.onrender.com'
   ],
   credentials: true
@@ -29,22 +41,17 @@ app.use(express.json());
 // Serve static files in production
 if (process.env.NODE_ENV === 'production') {
   try {
-    // Create dist directory if it doesn't exist
-    const distPath = path.join(rootDir, 'dist');
-    if (!fs.existsSync(distPath)) {
-      fs.mkdirSync(distPath, { recursive: true });
-      console.log('Created dist directory at:', distPath);
-    }
+    // List all files in the root directory
+    console.log('Root directory contents:', fs.readdirSync(rootDir));
     
-    // Copy build files if they exist in a different location
-    const buildPath = path.join(rootDir, 'build');
-    if (fs.existsSync(buildPath)) {
-      fs.cpSync(buildPath, distPath, { recursive: true });
-      console.log('Copied build files to dist directory');
+    if (fs.existsSync(distDir)) {
+      console.log('Dist directory contents:', fs.readdirSync(distDir));
+    } else {
+      console.log('Dist directory does not exist');
     }
 
-    app.use(express.static(distPath));
-    console.log('Serving static files from:', distPath);
+    app.use(express.static(distDir));
+    console.log('Static middleware configured for:', distDir);
   } catch (error) {
     console.error('Error setting up static files:', error);
   }
@@ -124,23 +131,45 @@ app.post('/api/updateFooter', (req, res) => {
   });
 });
 
-// Handle all other routes in production
+// Serve index.html for all routes in production
 app.get('*', (req, res) => {
   if (process.env.NODE_ENV === 'production') {
-    const indexPath = path.join(rootDir, 'dist', 'index.html');
-    console.log('Trying to serve:', indexPath);
+    const indexPath = path.join(distDir, 'index.html');
     
-    if (fs.existsSync(indexPath)) {
-      res.sendFile(indexPath);
-    } else {
-      console.error('index.html not found at:', indexPath);
-      // Send a more detailed error response
+    try {
+      if (fs.existsSync(indexPath)) {
+        res.sendFile(indexPath);
+      } else {
+        // Try to find index.html in other possible locations
+        const possiblePaths = [
+          path.join(rootDir, 'index.html'),
+          path.join(rootDir, 'public', 'index.html'),
+          path.join(rootDir, 'build', 'index.html')
+        ];
+
+        for (const p of possiblePaths) {
+          if (fs.existsSync(p)) {
+            console.log('Found index.html at:', p);
+            return res.sendFile(p);
+          }
+        }
+
+        throw new Error('index.html not found');
+      }
+    } catch (error) {
+      console.error('Error serving index.html:', error);
       res.status(404).json({
-        error: 'Application not properly built',
+        error: 'Application files not found',
+        details: error.message,
         paths: {
+          attempted: indexPath,
           current: process.cwd(),
           root: rootDir,
-          index: indexPath
+          dist: distDir
+        },
+        env: {
+          NODE_ENV: process.env.NODE_ENV,
+          RENDER: process.env.RENDER
         }
       });
     }
