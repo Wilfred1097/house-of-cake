@@ -15,12 +15,15 @@ export default defineConfig({
     assetsDir: 'assets',
     rollupOptions: {
       output: {
-        manualChunks: undefined
+        manualChunks: undefined,
+        entryFileNames: 'assets/[name].[hash].js',
+        chunkFileNames: 'assets/[name].[hash].js',
+        assetFileNames: 'assets/[name].[hash].[ext]'
       }
     },
+    manifest: true,
     copyPublicDir: true,
-    base: '/',
-    sourcemap: true
+    base: '/'
   },
   define: {
     'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)

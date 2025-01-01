@@ -28,6 +28,19 @@ console.log('Directories:', {
   dirname: __dirname
 });
 
+// Configure MIME types
+app.use(express.static(distDir, {
+  setHeaders: (res, path) => {
+    if (path.endsWith('.js')) {
+      res.setHeader('Content-Type', 'application/javascript');
+    } else if (path.endsWith('.css')) {
+      res.setHeader('Content-Type', 'text/css');
+    } else if (path.endsWith('.html')) {
+      res.setHeader('Content-Type', 'text/html');
+    }
+  }
+}));
+
 app.use(cors({
   origin: [
     'http://localhost:5173',
@@ -38,24 +51,24 @@ app.use(cors({
 
 app.use(express.json());
 
-// Serve static files in production
-if (process.env.NODE_ENV === 'production') {
-  try {
-    // List all files in the root directory
-    console.log('Root directory contents:', fs.readdirSync(rootDir));
-    
-    if (fs.existsSync(distDir)) {
-      console.log('Dist directory contents:', fs.readdirSync(distDir));
-    } else {
-      console.log('Dist directory does not exist');
-    }
-
-    app.use(express.static(distDir));
-    console.log('Static middleware configured for:', distDir);
-  } catch (error) {
-    console.error('Error setting up static files:', error);
+// Serve index.html and handle client-side routing
+app.get('/*', (req, res, next) => {
+  if (req.path.includes('.')) {
+    next(); // Let express.static handle files with extensions
+    return;
   }
-}
+
+  const indexPath = path.join(distDir, 'index.html');
+  if (fs.existsSync(indexPath)) {
+    res.sendFile(indexPath);
+  } else {
+    console.error('index.html not found at:', indexPath);
+    res.status(404).json({
+      error: 'Application files not found',
+      path: indexPath
+    });
+  }
+});
 
 // Configure multer for image upload
 const storage = multer.diskStorage({
@@ -131,53 +144,9 @@ app.post('/api/updateFooter', (req, res) => {
   });
 });
 
-// Serve index.html for all routes in production
-app.get('*', (req, res) => {
-  if (process.env.NODE_ENV === 'production') {
-    const indexPath = path.join(distDir, 'index.html');
-    
-    try {
-      if (fs.existsSync(indexPath)) {
-        res.sendFile(indexPath);
-      } else {
-        // Try to find index.html in other possible locations
-        const possiblePaths = [
-          path.join(rootDir, 'index.html'),
-          path.join(rootDir, 'public', 'index.html'),
-          path.join(rootDir, 'build', 'index.html')
-        ];
-
-        for (const p of possiblePaths) {
-          if (fs.existsSync(p)) {
-            console.log('Found index.html at:', p);
-            return res.sendFile(p);
-          }
-        }
-
-        throw new Error('index.html not found');
-      }
-    } catch (error) {
-      console.error('Error serving index.html:', error);
-      res.status(404).json({
-        error: 'Application files not found',
-        details: error.message,
-        paths: {
-          attempted: indexPath,
-          current: process.cwd(),
-          root: rootDir,
-          dist: distDir
-        },
-        env: {
-          NODE_ENV: process.env.NODE_ENV,
-          RENDER: process.env.RENDER
-        }
-      });
-    }
-  }
-});
-
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   console.log('Environment:', process.env.NODE_ENV);
+  console.log('Serving files from:', distDir);
 }); 
