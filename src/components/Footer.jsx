@@ -18,7 +18,7 @@ export default function Footer() {
               <li><a href="#" className="hover:text-white">Home</a></li>
               <li><a href="#menu" className="hover:text-white">Menu</a></li>
               <li><a href="#about" className="hover:text-white">About Us</a></li>
-              <li><a href="/crm" className="hover:text-white">Admin Panel</a></li>
+              <li><a href="/crm" target="_blank" className="hover:text-white">Admin Panel</a></li>
             </ul>
           </div>
           <div>
