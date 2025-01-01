@@ -4,8 +4,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build --outDir dist",
-    "postbuild": "mkdir -p dist && cp -r build/* dist/ 2>/dev/null || true",
+    "build": "vite build",
+    "postbuild": "node -e \"const fs=require('fs'); const path=require('path'); const dist=path.join(process.cwd(),'dist'); if(!fs.existsSync(dist)){fs.mkdirSync(dist,{recursive:true})}\"",
     "server": "node src/server/server.js",
     "dev:all": "concurrently \"npm run dev\" \"npm run server\"",
     "preview": "vite preview",

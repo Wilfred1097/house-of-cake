@@ -6,24 +6,18 @@ services:
       echo "Starting build process..."
       npm install
       npm run build
-      echo "Build complete. Checking directories..."
-      pwd
-      echo "Current directory contents:"
-      ls -la
-      echo "Dist directory contents:"
-      ls -la dist || true
-      echo "Ensuring dist directory exists..."
-      mkdir -p dist
-      echo "Copying build files if they exist..."
-      cp -r build/* dist/ 2>/dev/null || true
-      cp index.html dist/ 2>/dev/null || true
-      echo "Final dist directory contents:"
-      ls -la dist
+      echo "Build complete. Setting up files..."
+      mkdir -p /opt/render/project/dist
+      cp -r dist/* /opt/render/project/dist/ || true
+      echo "Checking final directory structure..."
+      ls -la /opt/render/project/dist/
     startCommand: |
       echo "Starting server..."
       echo "Current directory: $(pwd)"
       echo "Directory contents:"
       ls -la
+      echo "Dist directory contents:"
+      ls -la /opt/render/project/dist
       RENDER=true NODE_ENV=production node src/server/server.js
     envVars:
       - key: NODE_ENV
@@ -32,13 +26,3 @@ services:
         value: 10000
       - key: RENDER
         value: "true"
-    headers:
-      - path: /*
-        name: Content-Type
-        value: text/html
-      - path: /*.js
-        name: Content-Type
-        value: application/javascript
-      - path: /*.css
-        name: Content-Type
-        value: text/css
