@@ -8,6 +8,7 @@ import { dirname } from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+const rootDir = path.join(__dirname, '../../');
 
 const app = express();
 
@@ -24,7 +25,15 @@ app.use(express.json());
 
 // Serve static files in production
 if (process.env.NODE_ENV === 'production') {
-  const distPath = path.join(__dirname, '../../../dist');
+  const distPath = path.join(rootDir, 'dist');
+  console.log('Serving static files from:', distPath);
+  
+  // Check if dist directory exists
+  if (!fs.existsSync(distPath)) {
+    console.error('dist directory not found at:', distPath);
+    fs.mkdirSync(distPath, { recursive: true });
+  }
+  
   app.use(express.static(distPath));
 }
 
@@ -105,13 +114,21 @@ app.post('/api/updateFooter', (req, res) => {
 // Handle all other routes in production
 app.get('*', (req, res) => {
   if (process.env.NODE_ENV === 'production') {
-    res.sendFile(path.join(__dirname, '../../../dist/index.html'));
+    const indexPath = path.join(rootDir, 'dist', 'index.html');
+    console.log('Trying to serve:', indexPath);
+    
+    if (fs.existsSync(indexPath)) {
+      res.sendFile(indexPath);
+    } else {
+      console.error('index.html not found at:', indexPath);
+      res.status(404).send('Application not properly built. Please check the build process.');
+    }
   }
 });
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   console.log('Environment:', process.env.NODE_ENV);
-  console.log('Current directory:', __dirname);
+  console.log('Root directory:', rootDir);
 }); 

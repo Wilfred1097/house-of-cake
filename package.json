@@ -6,9 +6,10 @@
     "dev": "vite",
     "server": "node src/server/server.js",
     "dev:all": "concurrently \"npm run dev\" \"npm run server\"",
-    "build": "vite build",
-    "postbuild": "mkdir -p dist",
-    "preview": "vite preview"
+    "build": "vite build && npm run postbuild",
+    "postbuild": "mkdir -p dist && cp -r dist/* dist/ || true",
+    "preview": "vite preview",
+    "start": "NODE_ENV=production node src/server/server.js"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.17",

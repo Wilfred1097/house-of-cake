@@ -5,8 +5,12 @@ services:
     buildCommand: |
       npm install
       npm run build
-    startCommand: NODE_ENV=production node src/server/server.js
-    staticPublishPath: ./dist
+      ls -la dist/  # Debug: List contents of dist directory
+    startCommand: |
+      ls -la       # Debug: List contents of root directory
+      NODE_ENV=production node src/server/server.js
     envVars:
       - key: NODE_ENV
         value: production
+      - key: PORT
+        value: 10000
