@@ -3,11 +3,18 @@ services:
     name: aure-sanchez
     env: node
     buildCommand: |
-      npm install
-      npm run build
-      ls -la dist/  # Debug: List contents of dist directory
+      if [ -f "build.sh" ]; then
+        bash build.sh
+      else
+        npm install
+        npm run build
+        mkdir -p dist
+        cp -r build/* dist/ || true
+        ls -la dist/
+      fi
     startCommand: |
-      ls -la       # Debug: List contents of root directory
+      echo "Current directory: $(pwd)"
+      ls -la
       NODE_ENV=production node src/server/server.js
     envVars:
       - key: NODE_ENV

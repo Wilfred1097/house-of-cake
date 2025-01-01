@@ -10,14 +10,15 @@ export default defineConfig({
     port: 5173
   },
   build: {
-    outDir: path.resolve(__dirname, 'dist'),
+    outDir: 'dist',
     emptyOutDir: true,
     assetsDir: 'assets',
     rollupOptions: {
       output: {
         manualChunks: undefined
       }
-    }
+    },
+    copyPublicDir: true
   },
   define: {
     'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)

@@ -4,10 +4,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "build": "vite build --outDir dist",
+    "postbuild": "mkdir -p dist && cp -r build/* dist/ 2>/dev/null || true",
     "server": "node src/server/server.js",
     "dev:all": "concurrently \"npm run dev\" \"npm run server\"",
-    "build": "vite build && npm run postbuild",
-    "postbuild": "mkdir -p dist && cp -r dist/* dist/ || true",
     "preview": "vite preview",
     "start": "NODE_ENV=production node src/server/server.js"
   },

@@ -8,14 +8,17 @@ import { dirname } from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const rootDir = path.join(__dirname, '../../');
+const rootDir = process.env.NODE_ENV === 'production' 
+  ? '/opt/render/project/src' 
+  : path.join(__dirname, '../../');
 
 const app = express();
 
-// Configure CORS for both development and production
+console.log('Current directory:', process.cwd());
+console.log('Root directory:', rootDir);
+
 app.use(cors({
   origin: [
-    'http://localhost:5173',
     'https://houseofcakes.onrender.com'
   ],
   credentials: true
@@ -25,16 +28,26 @@ app.use(express.json());
 
 // Serve static files in production
 if (process.env.NODE_ENV === 'production') {
-  const distPath = path.join(rootDir, 'dist');
-  console.log('Serving static files from:', distPath);
-  
-  // Check if dist directory exists
-  if (!fs.existsSync(distPath)) {
-    console.error('dist directory not found at:', distPath);
-    fs.mkdirSync(distPath, { recursive: true });
+  try {
+    // Create dist directory if it doesn't exist
+    const distPath = path.join(rootDir, 'dist');
+    if (!fs.existsSync(distPath)) {
+      fs.mkdirSync(distPath, { recursive: true });
+      console.log('Created dist directory at:', distPath);
+    }
+    
+    // Copy build files if they exist in a different location
+    const buildPath = path.join(rootDir, 'build');
+    if (fs.existsSync(buildPath)) {
+      fs.cpSync(buildPath, distPath, { recursive: true });
+      console.log('Copied build files to dist directory');
+    }
+
+    app.use(express.static(distPath));
+    console.log('Serving static files from:', distPath);
+  } catch (error) {
+    console.error('Error setting up static files:', error);
   }
-  
-  app.use(express.static(distPath));
 }
 
 // Configure multer for image upload
@@ -121,7 +134,15 @@ app.get('*', (req, res) => {
       res.sendFile(indexPath);
     } else {
       console.error('index.html not found at:', indexPath);
-      res.status(404).send('Application not properly built. Please check the build process.');
+      // Send a more detailed error response
+      res.status(404).json({
+        error: 'Application not properly built',
+        paths: {
+          current: process.cwd(),
+          root: rootDir,
+          index: indexPath
+        }
+      });
     }
   }
 });
@@ -130,5 +151,4 @@ const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   console.log('Environment:', process.env.NODE_ENV);
-  console.log('Root directory:', rootDir);
 }); 
