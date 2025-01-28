@@ -16,7 +16,8 @@ const app = express();
 app.use(cors({
   origin: [
     'http://localhost:5173',
-    'https://houseofcakes.onrender.com'
+    'https://houseofcakes.onrender.com',
+    'https://houseofcake-git-main-wilfred1097s-projects.vercel.app'
   ],
   credentials: true
 }));
