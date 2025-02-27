@@ -9,7 +9,7 @@ export const generateToken = () => {
 };
 
 export const setAuthToken = (token) => {
-  Cookies.set(TOKEN_NAME, token, { expires: TOKEN_EXPIRY });
+  Cookies.set(TOKEN_NAME, token);
 };
 
 export const getAuthToken = () => {
@@ -21,6 +21,5 @@ export const removeAuthToken = () => {
 };
 
 export const isAuthenticated = () => {
-  const token = getAuthToken();
-  return !!token;
+  return !!Cookies.get(TOKEN_NAME);
 }; 
